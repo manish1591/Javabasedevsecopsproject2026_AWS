@@ -1,0 +1,62 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: daily-backup
+  namespace: velero
+spec:
+  schedule: "0 1 * * *"
+  template:
+    includedNamespaces:
+    - production
+    - staging
+    excludedResources:
+    - events
+    - events.events.k8s.io
+    storageLocation: aws-backup-storage
+    volumeSnapshotLocations:
+    - aws-ebs-snapshots
+    ttl: 720h
+    defaultVolumesToRestic: true
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: weekly-backup
+  namespace: velero
+spec:
+  schedule: "0 2 * * 0"
+  template:
+    includedNamespaces:
+    - production
+    excludedResources:
+    - events
+    storageLocation: aws-backup-storage
+    volumeSnapshotLocations:
+    - aws-ebs-snapshots
+    ttl: 2160h
+    defaultVolumesToRestic: true
+---
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: aws-backup-storage
+  namespace: velero
+spec:
+  provider: aws
+  objectStorage:
+    bucket: devsecops-backups-production
+    prefix: velero
+  config:
+    region: us-east-1
+    s3ForcePathStyle: "false"
+    s3Url: ""
+---
+apiVersion: velero.io/v1
+kind: VolumeSnapshotLocation
+metadata:
+  name: aws-ebs-snapshots
+  namespace: velero
+spec:
+  provider: aws
+  config:
+    region: us-east-1

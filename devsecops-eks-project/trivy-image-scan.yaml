@@ -1,0 +1,14 @@
+apiVersion: aquasecurity.github.io/v1alpha1
+kind: ClusterImageScanReport
+metadata:
+  name: nightly-scan
+spec:
+  imageRef: "devsecops-demo-backend:latest"
+  scanJobTolerations:
+  - key: "scan"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+  scanJobNodeSelector:
+    node-type: "scan-worker"
+  timeout: 10m

@@ -1,0 +1,21 @@
+title = "Gitleaks Configuration"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key"
+regex = '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
+tags = ["aws", "key"]
+
+[[rules]]
+id = "github-token"
+description = "GitHub Token"
+regex = '''ghp_[A-Za-z0-9_]{36}'''
+tags = ["github", "token"]
+
+[allowlist]
+description = "Allow listed files"
+paths = ['''\.gitignore$''', '''\.gitleaks\.toml$''']
+commits = [""]
